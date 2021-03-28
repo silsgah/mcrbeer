@@ -3,16 +3,20 @@ package com.silasgah.msscbrewery.web.controller;
 
 import com.silasgah.msscbrewery.service.BeerService;
 import com.silasgah.msscbrewery.web.model.BeerDto;
+import lombok.val;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.UUID;
+
 
 @RequestMapping("/api/v1/beer")
 @RestController
 public class BeerController {
+
     private final BeerService beerService;
 
     public BeerController(BeerService beerService) {
@@ -26,15 +30,15 @@ public class BeerController {
     }
 
     @PostMapping
-    public ResponseEntity handlePost(@RequestBody BeerDto beerDto){
-        BeerDto saveBeer = beerService.savedNewBeer(beerDto);
+    public ResponseEntity handlePost(@Valid @RequestBody BeerDto beerDto){
+        val saveBeer = beerService.savedNewBeer(beerDto);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", "/api/v1/beer/" + saveBeer.getId().toString());
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
     @PutMapping("{beerId}")
-    public ResponseEntity handleUpdate(@PathVariable("beerId") UUID Id,@RequestBody BeerDto beerDto){
+    public ResponseEntity handleUpdate(@PathVariable("beerId") UUID Id,@Valid @RequestBody BeerDto beerDto){
         beerService.updateBeer(Id, beerDto);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
